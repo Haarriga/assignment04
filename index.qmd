@@ -7,12 +7,90 @@ editor_options:
   chunk_output_type: console
 ---
 
-Data source: [https://cps.ipums.org/cps/](https://cps.ipums.org/cps/)
+Data source: [https://data.virginia.gov/api/views/p2ww-25u5/rows.csv?accessType=DOWNLOAD](https://data.virginia.gov/api/views/p2ww-25u5/rows.csv?accessType=DOWNLOAD)
 
-# Graph 1
+## Graph 1
+Line chart： Virginia's labor force and total population over years
+```{r}
+library(readr)
+library(tidyverse)
+data <- read_csv("Virginia_Employment_Status_of_the_Population_by_Sex_by_Race_and_by_Age_by_Year.csv")
 
-# Graph 2
+data %>%
+  filter(PopulationGroup == "Total") %>%
+  ggplot() +
+  geom_line(aes(x = Year,
+                y = CivilianLaborForce,
+                color = "Labor force")) +
+  geom_line(aes(x = Year,
+                y = CivilianNonInstitutionalPopulation,
+                color = "Population")) +
+  scale_color_manual("", 
+                     values = c(
+    "Labor force" = "red",
+    "Population" = "blue")) +
+  labs(y = "The number of people (thousand)",
+       title = "The increase of labor force fluctuates, while total population increases steadily in Virginia",
+       caption = "Source: data.virginia.gov")
 
-# Graph 3
+```
 
-# Graph 4
+## Graph 2
+Line chart: Virginia's unemployment rate over years
+```{r}
+data %>%
+  filter(GroupCode == "01") %>%
+  ggplot(aes(x = Year,
+             y = CivilianLaborForceUnemployedPercentOfPopulation)) +
+  geom_text(aes(label = CivilianLaborForceUnemployedPercentOfPopulation),
+            vjust = 2,
+            nudge_x = 0.1) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(limits = c(1,8)) +
+labs(title = 
+         paste("Virginia's unemployment rate fluctuates around 5% in recent years"),
+       caption = "Source: data.virginia.gov",
+       x = "Year",
+       y = "Unemployment Rate (%)")
+```
+
+## Graph 3
+Bar chart: Relationship Between Education and Income by Gender
+```{r}
+data %>%
+  filter(PopulationGroup == "Asian" | PopulationGroup == "Black or African American" |
+           PopulationGroup == "White" |
+           PopulationGroup == "Hispanic or Latina ethnicity") %>%
+  ggplot() +
+  geom_col(aes(x = Year,
+               y = CivilianLaborForceUnemployedPercentOfPopulation,
+               fill = PopulationGroup)) +
+  labs(y = "Unemployment rate (%)", title = "The unemployment rate of minority groups is substantially higher than that of white people in Virginia",
+       caption = "Source: data.virginia.gov")
+
+```
+
+## Graph 4
+Pie chart: Virginia's unemployment rate by gender
+```{r}
+cp <- coord_polar(theta = "y")
+cp$is_free <- function() TRUE
+
+data %>%
+  filter(PopulationGroup == "Women" | PopulationGroup == "Men") %>%
+  ggplot(aes(x = "",
+             y = CivilianLaborForceUnemployedPercentOfPopulation,
+             fill = PopulationGroup)) +
+  geom_bar(stat = "identity",
+           color = "black",
+           width = 1) +
+  geom_text(aes(label = CivilianLaborForceUnemployedPercentOfPopulation),
+            position = position_stack(vjust = 0.5)) +
+  cp +
+  facet_wrap(~Year, 
+             scales = "free") +
+  theme_void() +
+  labs(title = "Women’s unemployment rate is normally higher than men’s in Virginia in recent years")
+
+```
