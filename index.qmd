@@ -9,6 +9,8 @@ editor_options:
 
 Data source: [https://data.virginia.gov/api/views/p2ww-25u5/rows.csv?accessType=DOWNLOAD](https://data.virginia.gov/api/views/p2ww-25u5/rows.csv?accessType=DOWNLOAD)
 
+Github: [https://github.com/Haarriga/assignment04](https://github.com/Haarriga/assignment04)
+
 ## Graph 1
 Line chart： Virginia's labor force and total population over years
 ```{r}
