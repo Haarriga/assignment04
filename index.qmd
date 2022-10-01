@@ -30,10 +30,12 @@ data %>%
     "Labor force" = "red",
     "Population" = "blue")) +
   labs(y = "The number of people (thousand)",
-       title = "The increase of labor force fluctuates, while total population increases steadily in Virginia",
+       title = "Difference Between Labor Force and Population",
+       subtitle = "The increase of labor force fluctuates, while total population increases steadily in Virginia.",
        caption = "Source: data.virginia.gov")
 
 ```
+In contrast to common sense, the labor force in Virginia has not grown as steadily as population in recent years. It even shrinks from time to time. The most recent shrinkage of labor force was in 2020, probably due to the covid-19 pandemic.
 
 ## Graph 2
 Line chart: Virginia's unemployment rate over years
@@ -48,49 +50,60 @@ data %>%
   geom_line() +
   geom_point() +
   scale_y_continuous(limits = c(1,8)) +
-labs(title = 
-         paste("Virginia's unemployment rate fluctuates around 5% in recent years"),
+labs(title = "Virginia's Unemployment Rate Fluctuates around 5% in Recent Years",
+     subtitle = "Unemployment rate in Virginia increased dramatically in 2020, probably due to the pandemic.",
        caption = "Source: data.virginia.gov",
        x = "Year",
        y = "Unemployment Rate (%)")
 ```
+In total, Virginia's unemployment rate holds around 5% in recent years. Unemployment rate increased dramatically in 2008 and 2020, respectively due to the great recession and the covid-19 pandemic. In spite of the fluctuations, unemployment rate in Virginia has normally been lower than national unemployment rate in the US.
 
 ## Graph 3
-Bar chart: Relationship Between Education and Income by Gender
+Bar chart: Virginia's unemployment rate by race
 ```{r}
 data %>%
   filter(PopulationGroup == "Asian" | PopulationGroup == "Black or African American" |
            PopulationGroup == "White" |
-           PopulationGroup == "Hispanic or Latina ethnicity") %>%
+           PopulationGroup == "Hispanic or Latino ethnicity") %>%
+  filter(Year >= 2016) %>%
   ggplot() +
   geom_col(aes(x = Year,
                y = CivilianLaborForceUnemployedPercentOfPopulation,
-               fill = PopulationGroup)) +
-  labs(y = "Unemployment rate (%)", title = "The unemployment rate of minority groups is substantially higher than that of white people in Virginia",
+               fill = PopulationGroup),
+           position = "dodge") +
+  scale_fill_manual(values = c("blue","light blue","purple","pink")) +
+  labs(y = "Unemployment rate (%)", 
+       title = "Unemployment Rate among African American Is Normally the Highest",
+       subtitle = "Unemployment rate among minority groups has been higher than among white people in the past 5 years in Virginia.",
        caption = "Source: data.virginia.gov")
 
 ```
+Overall, the unemployment rate by race fluctuated in the recent 5 years (2016-2020) in Virginia. Among four races, Black experienced the highest unemployment rate until 2020, while the unemployment rate of White was the lowest over years. It's worth noting that COVID-19 had exacted a significant toll on the labor market in Virginia. The unemployment rates of four races have significantly risen in 2020, especially for minority communities (Asian, Black, and Hispanic). Minority communities faced worse labor market outcomes than the aggregate or averages suggest. Policies should not only aim to stimulate overall employment but also needs to promote equitable outcomes in the labor market.
 
 ## Graph 4
-Pie chart: Virginia's unemployment rate by gender
+Pie chart: Virginia's labor force by gender
 ```{r}
 cp <- coord_polar(theta = "y")
 cp$is_free <- function() TRUE
 
 data %>%
-  filter(PopulationGroup == "Women" | PopulationGroup == "Men") %>%
-  ggplot(aes(x = "",
-             y = CivilianLaborForceUnemployedPercentOfPopulation,
+  filter(PopulationGroup == "Men"|
+           PopulationGroup == "Women") %>%
+  ggplot(aes(x = "", 
+             y = CivilianLaborForce,
              fill = PopulationGroup)) +
   geom_bar(stat = "identity",
            color = "black",
            width = 1) +
-  geom_text(aes(label = CivilianLaborForceUnemployedPercentOfPopulation),
-            position = position_stack(vjust = 0.5)) +
+  geom_text(aes(label=CivilianLaborForce),
+            position = position_stack(vjust = 0.5),
+            size = 2.5) +
   cp +
-  facet_wrap(~Year, 
-             scales = "free") +
+  scale_fill_brewer(palette="Set2") +
+  facet_wrap(~Year, scales = "free") +
   theme_void() +
-  labs(title = "Women’s unemployment rate is normally higher than men’s in Virginia in recent years")
+  labs(title = "Female Labor Force Is Less Than Male Labor Force",
+       subtitle = "Female labor force has normally been smaller than male labor force in the past 17 years.",
+       caption = "Source: data.virginia.gov")
 
 ```
