@@ -5,8 +5,7 @@ format: html
 editor: source
 editor_options: 
   chunk_output_type: console
-html:
-  self-contained: true
+self-contained: true
 ---
 
 Data source: [https://data.virginia.gov/api/views/p2ww-25u5/rows.csv?accessType=DOWNLOAD](https://data.virginia.gov/api/views/p2ww-25u5/rows.csv?accessType=DOWNLOAD)
